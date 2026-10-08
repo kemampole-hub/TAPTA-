@@ -1,0 +1,312 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+  }
+
+  .font-display {
+    font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* 3D Tile Shadows & Tactile Depth */
+.tile-3d-active {
+  box-shadow: 
+    0 4px 0 #cbd5e1,
+    0 6px 14px rgba(15, 23, 42, 0.28),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.15s ease, filter 0.2s ease;
+}
+
+.tile-3d-active:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #cbd5e1,
+    0 8px 18px rgba(15, 23, 42, 0.32),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.tile-3d-active:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #cbd5e1,
+    0 4px 8px rgba(15, 23, 42, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.tile-3d-blocked {
+  box-shadow: 
+    0 2px 0 #b3a899,
+    0 3px 6px rgba(15, 23, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  filter: brightness(0.94) saturate(0.92);
+}
+
+.tile-dock {
+  box-shadow: 
+    0 3px 0 #cbd5e1,
+    0 4px 10px rgba(15, 23, 42, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+}
+
+/* Clean White Tile Shatter Animations (No fire, no orange/red, pure white falling fragments) */
+@keyframes tileShatterBreak {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  20% {
+    transform: scale(1.05) translateY(-1px) rotate(-1deg);
+    opacity: 0.95;
+    filter: brightness(1.1);
+  }
+  45% {
+    transform: scale(0.96) translateY(2px) rotate(1.5deg);
+    opacity: 0.7;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 85%);
+  }
+  100% {
+    transform: scale(0.7) translateY(12px);
+    opacity: 0;
+  }
+}
+
+.animate-tile-shatter {
+  animation: tileShatterBreak 0.38s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Pair Convergence & Shatter: Two identical tiles moving toward each other */
+@keyframes pairConvergeLeft {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(6px) scale(1.05);
+    filter: brightness(1.1);
+  }
+  65% {
+    transform: translateX(8px) scale(0.95);
+    opacity: 0.7;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 85%);
+  }
+  100% {
+    transform: translateX(9px) translateY(10px) scale(0.65);
+    opacity: 0;
+  }
+}
+
+@keyframes pairConvergeRight {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(-6px) scale(1.05);
+    filter: brightness(1.1);
+  }
+  65% {
+    transform: translateX(-8px) scale(0.95);
+    opacity: 0.7;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 15% 100%);
+  }
+  100% {
+    transform: translateX(-9px) translateY(10px) scale(0.65);
+    opacity: 0;
+  }
+}
+
+.animate-pair-converge-left {
+  animation: pairConvergeLeft 0.38s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-pair-converge-right {
+  animation: pairConvergeRight 0.38s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Light shatter vibration when 2 identical tiles meet */
+@keyframes tileLightShatter {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.05) translateY(-1px);
+    filter: brightness(1.06);
+  }
+  65% {
+    transform: scale(0.98) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-light-shatter {
+  animation: tileLightShatter 0.32s ease-out;
+}
+
+/* White fragment falling naturally with gravity */
+@keyframes whiteFragmentFall {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(var(--frag-dx), calc(var(--frag-dy) * 0.25)) rotate(var(--frag-rot)) scale(0.95);
+  }
+  80% {
+    opacity: 0.7;
+    transform: translate(calc(var(--frag-dx) * 1.15), calc(var(--frag-dy) * 0.8)) rotate(calc(var(--frag-rot) * 1.6)) scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--frag-dx) * 1.25), var(--frag-dy)) rotate(calc(var(--frag-rot) * 2.2)) scale(0.6);
+  }
+}
+
+.animate-white-fragment {
+  animation: whiteFragmentFall var(--frag-duration, 0.48s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Shake on illegal tap or danger */
+@keyframes softShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: softShake 0.3s ease-in-out;
+}
+
+/* Floating score popup */
+@keyframes floatScore {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-24px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-38px) scale(0.9);
+  }
+}
+
+.animate-float-score {
+  animation: floatScore 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle glow pulse */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.animate-subtle-pulse {
+  animation: subtlePulse 2s ease-in-out infinite;
+}
+
+/* 3D Floating Animations for Splash and Menu */
+@keyframes floatSlow1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+@keyframes floatSlow2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(-4deg);
+  }
+}
+
+@keyframes floatSlow3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2.5deg);
+  }
+}
+
+.animate-float-1 {
+  animation: floatSlow1 4.5s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: floatSlow2 5.5s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: floatSlow3 6s ease-in-out infinite;
+}
+
+/* Elastic logo entrance for Splash */
+@keyframes logoEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.65) translateY(20px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.06) translateY(-4px);
+  }
+  85% {
+    transform: scale(0.98) translateY(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-logo-entrance {
+  animation: logoEntrance 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 3D Giant Play Button Tactile Feel */
+.btn-3d-play {
+  box-shadow:
+    0 8px 0 #B45309,
+    0 14px 28px rgba(0, 0, 0, 0.45),
+    inset 0 2px 2px rgba(255, 255, 255, 0.9),
+    inset 0 -3px 0 rgba(180, 83, 9, 0.4);
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.btn-3d-play:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 0 #B45309,
+    0 18px 32px rgba(0, 0, 0, 0.5),
+    inset 0 2px 3px rgba(255, 255, 255, 0.95);
+}
+
+.btn-3d-play:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 3px 0 #B45309,
+    0 6px 14px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+

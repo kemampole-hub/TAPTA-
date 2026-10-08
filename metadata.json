@@ -1,0 +1,7 @@
+{
+  "name": "TAPTA - Jeu de Puzzle Triple Match",
+  "description": "Jeu mobile de puzzle Triple Match captivant avec tuiles empilées en 3D, 27 symboles et 500 niveaux progressifs organisés en 5 grandes zones.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
